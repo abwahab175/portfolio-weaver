@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { Mail, Phone, Linkedin, MapPin, Send } from "lucide-react";
+import { Mail, Phone, Linkedin, Github, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const contactLinks = [
@@ -22,6 +22,12 @@ const contactLinks = [
     label: "LinkedIn",
     value: "linkedin.com/in/abwahab175",
     href: "https://linkedin.com/in/abwahab175",
+  },
+  {
+    icon: Github,
+    label: "GitHub",
+    value: "github.com/abwahab175",
+    href: "https://github.com/abwahab175",
   },
 ];
 
