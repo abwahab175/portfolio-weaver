@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Mail, Linkedin, Phone, ChevronDown } from "lucide-react";
+import { Mail, Linkedin, Phone, ChevronDown, Github, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroBg from "@/assets/hero-bg.jpg";
 
@@ -75,6 +75,22 @@ const Hero = () => {
               <a href="tel:+923322538335">
                 <Phone className="mr-2 h-5 w-5" />
                 Call Me
+              </a>
+            </Button>
+            <Button variant="heroOutline" size="lg" asChild>
+              <a
+                href="https://github.com/abwahab175"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Github className="mr-2 h-5 w-5" />
+                GitHub
+              </a>
+            </Button>
+            <Button variant="heroOutline" size="lg" asChild>
+              <a href="/Abdul_Wahab_Resume.pdf" download>
+                <Download className="mr-2 h-5 w-5" />
+                Resume
               </a>
             </Button>
           </motion.div>
