@@ -1,16 +1,23 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Mail, Linkedin, Phone, ChevronDown, Github, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroBg from "@/assets/hero-bg.jpg";
 
+gsap.registerPlugin(ScrollTrigger);
+
 const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
+  const bgImageRef = useRef<HTMLImageElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLSpanElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const buttonsRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -18,13 +25,58 @@ const Hero = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Parallax effect for background image
+      gsap.to(bgImageRef.current, {
+        yPercent: 30,
+        scale: 1.1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.5,
+        },
+      });
+
+      // Fade out overlay as you scroll
+      gsap.to(overlayRef.current, {
+        opacity: 1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.5,
+        },
+      });
+
+      // Content parallax - moves slower than scroll
+      gsap.to(contentRef.current, {
+        yPercent: 20,
+        opacity: 0,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "50% top",
+          scrub: 0.3,
+        },
+      });
+
+      // Entrance animations
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
       tl.fromTo(
-        tagRef.current,
-        { opacity: 0, scale: 0.9, y: 20 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.8 }
+        bgImageRef.current,
+        { scale: 1.2, opacity: 0 },
+        { scale: 1, opacity: 0.4, duration: 1.5 }
       )
+        .fromTo(
+          tagRef.current,
+          { opacity: 0, scale: 0.9, y: 20 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.8 },
+          "-=0.8"
+        )
         .fromTo(
           titleRef.current,
           { opacity: 0, y: 40 },
@@ -68,18 +120,23 @@ const Hero = () => {
       ref={containerRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Background Image */}
-      <div className="absolute inset-0">
+      {/* Background Image with Parallax */}
+      <div ref={bgRef} className="absolute inset-0 overflow-hidden">
         <img
+          ref={bgImageRef}
           src={heroBg}
           alt="Hero background"
-          className="w-full h-full object-cover opacity-40"
+          className="w-full h-full object-cover opacity-0 will-change-transform"
+          style={{ transform: "scale(1.1)" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/60 to-background" />
+        <div 
+          ref={overlayRef}
+          className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/60 to-background opacity-70" 
+        />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-6 text-center">
+      <div ref={contentRef} className="relative z-10 container mx-auto px-6 text-center will-change-transform">
         <div>
           <div className="mb-6">
             <span
