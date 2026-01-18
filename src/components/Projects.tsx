@@ -1,8 +1,9 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
-import { Brain, GraduationCap, Award, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Brain, GraduationCap, Award } from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const projects = [
   {
@@ -41,34 +42,70 @@ const projects = [
 ];
 
 const Projects = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const sectionRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        titleRef.current,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+
+      const cards = cardsRef.current?.children;
+      if (cards) {
+        gsap.fromTo(
+          cards,
+          { opacity: 0, y: 50, rotateX: 10 },
+          {
+            opacity: 1,
+            y: 0,
+            rotateX: 0,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: cardsRef.current,
+              start: "top 75%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section id="projects" className="py-24 relative bg-secondary/20" ref={ref}>
+    <section id="projects" className="py-24 relative bg-secondary/20" ref={sectionRef}>
       <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
+        <div ref={titleRef} className="text-center mb-16 opacity-0">
           <h2 className="section-title">
             Projects & <span className="text-gradient">Certifications</span>
           </h2>
           <p className="section-subtitle max-w-2xl mx-auto">
             Hands-on experience building AI solutions and continuous learning
           </p>
-        </motion.div>
+        </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {projects.map((project, index) => (
-            <motion.div
+        <div ref={cardsRef} className="grid lg:grid-cols-3 gap-8">
+          {projects.map((project) => (
+            <div
               key={project.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.15 }}
-              className="group glass-card rounded-xl overflow-hidden hover:glow-effect transition-all duration-300"
+              className="group glass-card rounded-xl overflow-hidden hover:glow-effect transition-all duration-300 opacity-0"
             >
               {/* Card Header */}
               <div className="p-6 pb-0">
@@ -116,7 +153,7 @@ const Projects = () => {
                   ))}
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

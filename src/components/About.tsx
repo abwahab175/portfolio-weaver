@@ -1,7 +1,9 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Brain, Database, Eye, MessageSquare, Bot, Award } from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const skills = [
   {
@@ -37,34 +39,84 @@ const skills = [
 ];
 
 const About = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const sectionRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
+  const certRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        titleRef.current,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+
+      gsap.fromTo(
+        cardsRef.current?.children || [],
+        { opacity: 0, y: 40, scale: 0.95 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: cardsRef.current,
+            start: "top 75%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+
+      gsap.fromTo(
+        certRef.current,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: certRef.current,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section id="about" className="py-24 relative" ref={ref}>
+    <section id="about" className="py-24 relative" ref={sectionRef}>
       <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
+        <div ref={titleRef} className="text-center mb-16 opacity-0">
           <h2 className="section-title">
             Technical <span className="text-gradient">Expertise</span>
           </h2>
           <p className="section-subtitle max-w-2xl mx-auto">
             Building end-to-end AI solutions with real-world project experience
           </p>
-        </motion.div>
+        </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {skills.map((skill, index) => (
-            <motion.div
+        <div ref={cardsRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {skills.map((skill) => (
+            <div
               key={skill.category}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="glass-card rounded-xl p-6 hover:glow-effect transition-all duration-300"
+              className="glass-card rounded-xl p-6 hover:glow-effect transition-all duration-300 opacity-0"
             >
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 rounded-lg bg-primary/10">
@@ -79,16 +131,14 @@ const About = () => {
                   </span>
                 ))}
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 
         {/* Certification Highlight */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="mt-12 glass-card rounded-xl p-8 text-center"
+        <div
+          ref={certRef}
+          className="mt-12 glass-card rounded-xl p-8 text-center opacity-0"
         >
           <Award className="h-12 w-12 text-primary mx-auto mb-4" />
           <h3 className="text-xl font-semibold mb-2">
@@ -97,7 +147,7 @@ const About = () => {
           <p className="text-muted-foreground">
             Designing and Implementing a Data Science Solution on Azure
           </p>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

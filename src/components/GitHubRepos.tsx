@@ -1,7 +1,9 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Github, Star, GitFork, ExternalLink } from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface Repo {
   id: number;
@@ -25,8 +27,9 @@ const languageColors: Record<string, string> = {
 };
 
 const GitHubRepos = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const sectionRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const [repos, setRepos] = useState<Repo[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -48,39 +51,76 @@ const GitHubRepos = () => {
     fetchRepos();
   }, []);
 
+  useEffect(() => {
+    if (loading || repos.length === 0) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        titleRef.current,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+
+      const cards = gridRef.current?.children;
+      if (cards) {
+        gsap.fromTo(
+          cards,
+          { opacity: 0, y: 40, scale: 0.95 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.5,
+            stagger: 0.05,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: gridRef.current,
+              start: "top 75%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [loading, repos]);
+
   return (
-    <section id="github" className="py-24 relative" ref={ref}>
+    <section id="github" className="py-24 relative" ref={sectionRef}>
       <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
+        <div ref={titleRef} className="text-center mb-16 opacity-0">
           <h2 className="section-title">
             GitHub <span className="text-gradient">Repositories</span>
           </h2>
           <p className="section-subtitle max-w-2xl mx-auto">
             Explore my open source projects and contributions
           </p>
-        </motion.div>
+        </div>
 
         {loading ? (
           <div className="flex justify-center items-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {repos.map((repo, index) => (
-              <motion.a
+          <div ref={gridRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {repos.map((repo) => (
+              <a
                 key={repo.id}
                 href={repo.html_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 30 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: Math.min(index * 0.05, 0.5) }}
-                className="glass-card rounded-xl p-6 hover:glow-effect transition-all duration-300 group"
+                className="glass-card rounded-xl p-6 hover:glow-effect transition-all duration-300 group opacity-0"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
@@ -122,7 +162,7 @@ const GitHubRepos = () => {
                     </div>
                   </div>
                 </div>
-              </motion.a>
+              </a>
             ))}
           </div>
         )}
