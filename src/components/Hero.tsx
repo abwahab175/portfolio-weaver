@@ -3,7 +3,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Mail, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import profileImg from "@/assets/profile-nobg.png";
+import profileImg from "@/assets/profile.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,58 +19,24 @@ const Hero = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Entrance animations
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
       tl.fromTo(
         imageRef.current,
-        { opacity: 0, x: 100, scale: 0.9 },
+        { opacity: 0, x: 120, scale: 0.95 },
         { opacity: 1, x: 0, scale: 1, duration: 1.2 }
-      )
-        .fromTo(
-          textRef.current?.querySelectorAll(".animate-item") || [],
-          { opacity: 0, x: -50 },
-          { opacity: 1, x: 0, duration: 0.8, stagger: 0.15 },
-          "-=0.8"
-        )
-        .fromTo(
-          scrollRef.current,
-          { opacity: 0 },
-          { opacity: 1, duration: 0.6 },
-          "-=0.2"
-        );
+      ).fromTo(
+        textRef.current?.querySelectorAll(".animate-item") || [],
+        { opacity: 0, y: 40 },
+        { opacity: 1, y: 0, stagger: 0.15, duration: 0.8 },
+        "-=0.8"
+      );
 
-      // Floating animation for scroll indicator
       gsap.to(scrollRef.current, {
         y: 10,
-        duration: 1.5,
         repeat: -1,
         yoyo: true,
-        ease: "power1.inOut",
-      });
-
-      // Parallax on scroll
-      gsap.to(imageRef.current, {
-        yPercent: 15,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 0.5,
-        },
-      });
-
-      gsap.to(textRef.current, {
-        yPercent: 10,
-        opacity: 0.3,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 0.5,
-        },
+        duration: 1.5,
       });
     }, containerRef);
 
@@ -80,82 +46,79 @@ const Hero = () => {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen flex items-center overflow-hidden bg-background"
+      className="relative min-h-screen overflow-hidden bg-[#08182f]"
     >
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/5" />
-      
-      <div className="relative z-10 container mx-auto px-6 py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Content */}
-          <div ref={textRef} className="space-y-6 text-left">
-            <p className="animate-item text-primary font-medium tracking-wide">
-              Hi, I'm
+      <div className="absolute inset-0 bg-gradient-to-br from-[#08182f] via-[#0a1f3c] to-[#020b1a]" />
+
+      <div className="relative z-10 container mx-auto px-6 py-24">
+        <div className="grid lg:grid-cols-2 items-center gap-10">
+          {/* LEFT CONTENT */}
+          <div ref={textRef} className="space-y-6">
+            <p className="animate-item text-primary tracking-widest uppercase">
+              Hi, I’m
             </p>
-            
-            <h1 className="animate-item text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
-              <span className="text-foreground">Abdul Wahab</span>{" "}
-              <span className="text-gradient">Memon</span>
+
+            <h1 className="animate-item text-5xl md:text-6xl font-extrabold leading-tight text-white">
+              Abdul Wahab <br />
+              <span className="text-primary">Memon</span>
             </h1>
-            
-            <h2 className="animate-item text-xl sm:text-2xl md:text-3xl text-primary font-semibold">
+
+            <h2 className="animate-item text-xl md:text-2xl text-primary font-semibold">
               Data Scientist & AI Engineer
             </h2>
-            
-            <p className="animate-item text-muted-foreground text-base md:text-lg max-w-xl leading-relaxed">
-              Microsoft Certified Azure Data Scientist with 6+ years in healthcare IT, 
-              specializing in ML/DL, Computer Vision, and NLP solutions that drive 
-              real-world impact.
+
+            <p className="animate-item max-w-xl text-gray-300 leading-relaxed">
+              Microsoft Certified Azure Data Scientist with 6+ years of
+              experience in Healthcare AI, specializing in Computer Vision,
+              NLP, and ML systems.
             </p>
-            
-            {/* CTA Buttons */}
-            <div className="animate-item flex flex-wrap gap-4 pt-4">
-              <Button variant="hero" size="lg" asChild>
-                <a href="mailto:abwahab175@gmail.com">
-                  <Mail className="mr-2 h-5 w-5" />
-                  Hire Me
-                </a>
+
+            <div className="animate-item flex gap-4 pt-4">
+              <Button size="lg" className="bg-primary hover:bg-primary/90">
+                <Mail className="mr-2 h-5 w-5" />
+                Hire Me
               </Button>
-              <Button variant="heroOutline" size="lg" asChild>
-                <a href="#contact" onClick={(e) => { e.preventDefault(); scrollToSection("contact"); }}>
-                  Let's Talk
-                </a>
+
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-primary text-primary hover:bg-primary/10"
+                onClick={() => scrollToSection("contact")}
+              >
+                Let’s Talk
               </Button>
             </div>
           </div>
-          
-          {/* Right Image */}
+
+          {/* RIGHT IMAGE */}
           <div ref={imageRef} className="relative flex justify-center lg:justify-end">
-            <div className="relative">
-              {/* Glow effects behind the person */}
-              <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-64 h-64 md:w-80 md:h-80 bg-primary/40 blur-[100px] rounded-full" />
-              <div className="absolute top-1/3 left-1/3 w-48 h-48 md:w-64 md:h-64 bg-primary/30 blur-[80px] rounded-full" />
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-32 bg-gradient-to-t from-background to-transparent" />
-              
-              {/* Profile image - no background */}
-              <div className="relative w-72 h-80 sm:w-80 sm:h-[22rem] md:w-96 md:h-[26rem] lg:w-[26rem] lg:h-[30rem]">
-                <img
-                  src={profileImg}
-                  alt="Abdul Wahab Memon"
-                  className="w-full h-full object-contain object-bottom drop-shadow-[0_0_30px_rgba(var(--primary-rgb),0.3)]"
-                />
-              </div>
+            {/* Glow */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-72 h-72 bg-primary/40 blur-[120px] rounded-full" />
+            </div>
+
+            {/* Image */}
+            <div className="relative w-80 md:w-[26rem] h-[28rem] overflow-hidden">
+              <img
+                src={profileImg}
+                alt="Abdul Wahab Memon"
+                className="w-full h-full object-cover object-top grayscale-[10%]"
+              />
+
+              {/* Blue overlay stripes */}
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-transparent mix-blend-screen" />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Scroll Indicator */}
+      {/* Scroll */}
       <div
         ref={scrollRef}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-0"
+        className="absolute bottom-10 left-1/2 -translate-x-1/2"
       >
-        <button
-          onClick={() => scrollToSection("about")}
-          className="text-muted-foreground hover:text-primary transition-colors"
-        >
-          <ChevronDown className="h-8 w-8" />
-        </button>
+        <ChevronDown className="h-8 w-8 text-primary" />
       </div>
     </section>
   );
