@@ -4,6 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Mail, Linkedin, Phone, ChevronDown, Github, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroBg from "@/assets/hero-bg.jpg";
+import profileImg from "@/assets/profile.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,6 +13,7 @@ const Hero = () => {
   const bgRef = useRef<HTMLDivElement>(null);
   const bgImageRef = useRef<HTMLImageElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLSpanElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
@@ -71,6 +73,12 @@ const Hero = () => {
         { scale: 1.2, opacity: 0 },
         { scale: 1, opacity: 0.4, duration: 1.5 }
       )
+        .fromTo(
+          profileRef.current,
+          { scale: 0.8, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.8 },
+          "-=0.8"
+        )
         .fromTo(
           tagRef.current,
           { opacity: 0, scale: 0.9, y: 20 },
@@ -138,6 +146,23 @@ const Hero = () => {
       {/* Content */}
       <div ref={contentRef} className="relative z-10 container mx-auto px-6 text-center will-change-transform">
         <div>
+          {/* Profile Picture */}
+          <div 
+            ref={profileRef}
+            className="mb-6 opacity-0"
+          >
+            <div className="relative inline-block">
+              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-primary/50 shadow-2xl shadow-primary/20 mx-auto">
+                <img 
+                  src={profileImg} 
+                  alt="Abdul Wahab Memon" 
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/20 to-transparent pointer-events-none" />
+            </div>
+          </div>
+
           <div className="mb-6">
             <span
               ref={tagRef}
