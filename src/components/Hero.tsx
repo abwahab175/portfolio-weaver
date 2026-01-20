@@ -3,7 +3,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Mail, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import profileImg from "@/assets/profile.jpg";
+import profileImg from "@/assets/profile-nobg.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -127,20 +127,18 @@ const Hero = () => {
           {/* Right Image */}
           <div ref={imageRef} className="relative flex justify-center lg:justify-end">
             <div className="relative">
-              {/* Glow effect behind image */}
-              <div className="absolute -inset-4 bg-gradient-to-r from-primary/30 via-primary/50 to-primary/30 blur-3xl opacity-60 rounded-full" />
-              <div className="absolute -inset-2 bg-gradient-to-t from-primary/40 to-transparent blur-2xl opacity-40" />
+              {/* Glow effects behind the person */}
+              <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-64 h-64 md:w-80 md:h-80 bg-primary/40 blur-[100px] rounded-full" />
+              <div className="absolute top-1/3 left-1/3 w-48 h-48 md:w-64 md:h-64 bg-primary/30 blur-[80px] rounded-full" />
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-32 bg-gradient-to-t from-background to-transparent" />
               
-              {/* Profile image */}
-              <div className="relative w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[28rem] lg:h-[28rem]">
+              {/* Profile image - no background */}
+              <div className="relative w-72 h-80 sm:w-80 sm:h-[22rem] md:w-96 md:h-[26rem] lg:w-[26rem] lg:h-[30rem]">
                 <img
                   src={profileImg}
                   alt="Abdul Wahab Memon"
-                  className="w-full h-full object-cover object-top rounded-2xl shadow-2xl shadow-primary/20"
+                  className="w-full h-full object-contain object-bottom drop-shadow-[0_0_30px_rgba(var(--primary-rgb),0.3)]"
                 />
-                {/* Gradient overlay for stylized look */}
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent rounded-2xl" />
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10 rounded-2xl" />
               </div>
             </div>
           </div>
